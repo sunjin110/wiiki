@@ -1,6 +1,0 @@
-
-
-type Hoge {
-    id: ID!
-    name: String!
-}

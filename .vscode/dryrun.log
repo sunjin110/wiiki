@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/sunjin/develop/wiiki'
+make: Leaving directory '/home/sunjin/develop/wiiki'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
