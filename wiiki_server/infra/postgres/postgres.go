@@ -8,7 +8,7 @@ import (
 )
 
 func Connect() error {
-	db, err := sql.Open("postgres", "host=127.0.0.1 port=5433 user=sunjin dbname=wiiki sslmode=disable")
+	db, err := sql.Open("postgres", "host=127.0.0.1 port=5433 user=sunjin dbname=wiiki sslmode=disable password=alma")
 	defer func() {
 		err := db.Close()
 		if err != nil {
