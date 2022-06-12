@@ -17,6 +17,10 @@ func (err *Error) Error() string {
 	return err.cause.Error()
 }
 
+func (err *Error) Log() string {
+	return fmt.Sprintf(err.format, err.args...)
+}
+
 func StackTrace(err error) {
 
 	innerErr := err
