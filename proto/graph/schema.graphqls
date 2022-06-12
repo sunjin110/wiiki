@@ -16,33 +16,3 @@ input NoopInput {
 type NoopPayload {
     clientMutationId: String
 }
-
-# type Todo {
-#   id: ID!
-#   text: String!
-#   done: Boolean!
-#   user: User!
-# }
-
-# # type User {
-# #   id: ID!
-# #   name: String!
-# # }
-
-# type Query {
-#   todos: [Todo!]!
-# }
-
-
-# input NewTodo {
-#   text: String!
-#   userId: String!
-# }
-
-# # input NewUser {
-# #   name: String!
-# # }
-
-# type Mutation {
-#   createTodo(input: NewTodo!): Todo!
-# }
