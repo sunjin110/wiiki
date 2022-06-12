@@ -3,4 +3,7 @@
 
 package tools
 
-import _ "github.com/99designs/gqlgen"
+import (
+	_ "bitbucket.org/liamstask/goose/cmd/goose"
+	_ "github.com/99designs/gqlgen"
+)
