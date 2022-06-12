@@ -9,5 +9,8 @@ create_migrate:
 goose_up:
 	goose -path infra/postgres up
 
+goose_down:
+	goose -path infra/postgres down
+
 goose_status:
 	goose -path infra/postgres status

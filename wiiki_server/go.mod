@@ -6,6 +6,7 @@ require (
 	bitbucket.org/liamstask/goose v0.0.0-20150115234039-8488cc47d90c
 	github.com/99designs/gqlgen v0.17.9
 	github.com/lib/pq v1.10.6
+	github.com/pkg/errors v0.9.1
 	github.com/vektah/gqlparser/v2 v2.4.4
 )
 
