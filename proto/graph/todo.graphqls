@@ -6,6 +6,8 @@ extend type Query {
 
 extend type Mutation {
     createTodo(input: NewTodo!): Todo!
+    deleteTodo(input: TodoId!): Boolean!
+    updateTodo(input: UpdateTodo): Boolean!
 }
 
 type Todo {
@@ -20,3 +22,13 @@ input NewTodo {
     userId: String!
 }
 
+input TodoId {
+    id: ID!
+}
+
+input UpdateTodo {
+    id: ID!
+    text: String
+    done: Boolean
+    userId: String
+}
