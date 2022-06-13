@@ -1,16 +1,22 @@
 MIGRATE_NAME=DEFAULT
+POSTGRES_DEVELOP="host=127.0.0.1 port=5432 user=wiiki_user dbname=wiiki sslmode=disable password=ZnfZxXY3"
+POSTGRES_MIGRATIONS_DIR=infra/postgres/migrations
 
 gqlgen_generate:
 	gqlgen generate
 
 create_migrate:
-	goose -path infra/postgres create $(MIGRATE_NAME)
+	# TODO name
+	./goose -dir=$(POSTGRES_MIGRATIONS_DIR) postgres $(POSTGRES_DEVELOP) create migrate go
 
 goose_up:
-	goose -path infra/postgres up
+	./goose -dir=$(POSTGRES_MIGRATIONS_DIR) postgres $(POSTGRES_DEVELOP) up
 
 goose_down:
-	goose -path infra/postgres down
+	./goose -dir=$(POSTGRES_MIGRATIONS_DIR) postgres $(POSTGRES_DEVELOP) down
 
 goose_status:
-	goose -path infra/postgres status
+	./goose postgres $(POSTGRES_DEVELOP) status
+
+goose_build:
+	go build -o goose cmd/migration_postgres/main.go

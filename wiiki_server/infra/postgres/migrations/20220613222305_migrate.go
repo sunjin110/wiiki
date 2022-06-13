@@ -1,13 +1,18 @@
-package main
+package migrations
 
 import (
 	"database/sql"
 	"fmt"
 	"wiiki_server/infra/common/wiikierr"
+
+	"github.com/pressly/goose/v3"
 )
 
-// Up is executed when this migration is applied
-func Up_20220612210245(txn *sql.Tx) {
+func init() {
+	goose.AddMigration(upMigrate, downMigrate)
+}
+
+func upMigrate(tx *sql.Tx) error {
 
 	queryList := []string{
 		`
@@ -41,18 +46,17 @@ func Up_20220612210245(txn *sql.Tx) {
 
 	for _, query := range queryList {
 		fmt.Println("exec query", query)
-		_, err := txn.Exec(query)
+		_, err := tx.Exec(query)
 		if err != nil {
-			werr := wiikierr.Bind(err, wiikierr.MigrateFailed, "query is %s", query)
-			wiikierr.StackTrace(werr)
-			return
+			return wiikierr.Bind(err, wiikierr.MigrateFailed, "query is %s", query)
+			// wiikierr.StackTrace(werr)
+			// return
 		}
 	}
-
+	return nil
 }
 
-// Down is executed when this migration is rolled back
-func Down_20220612210245(txn *sql.Tx) {
+func downMigrate(tx *sql.Tx) error {
 	queryList := []string{
 		`drop table if exists links;`,
 		`drop table if exists users;`,
@@ -60,11 +64,10 @@ func Down_20220612210245(txn *sql.Tx) {
 	}
 	for _, query := range queryList {
 		fmt.Println("exec query", query)
-		_, err := txn.Exec(query)
+		_, err := tx.Exec(query)
 		if err != nil {
-			werr := wiikierr.Bind(err, wiikierr.MigrateFailed, "query is %s", query)
-			wiikierr.StackTrace(werr)
-			return
+			return wiikierr.Bind(err, wiikierr.MigrateFailed, "query is %s", query)
 		}
 	}
+	return nil
 }
