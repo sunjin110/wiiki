@@ -4,6 +4,6 @@
 package tools
 
 import (
-	_ "bitbucket.org/liamstask/goose/cmd/goose"
 	_ "github.com/99designs/gqlgen"
+	_ "github.com/pressly/goose/v3/cmd/goose"
 )

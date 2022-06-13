@@ -1,9 +1,0 @@
-# https://bitbucket.org/liamstask/goose/src/master/db-sample/dbconf.yml
-
-development:
-  driver: postgres
-  open: host=127.0.0.1 port=5433 user=wiiki_user dbname=wiiki sslmode=disable password=ZnfZxXY3
-
-production:
-  driver: postgres
-  open: $DATABASE_URL
