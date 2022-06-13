@@ -1,0 +1,1 @@
+{"buildTargets":["create_migrate","goose_down","goose_status","goose_up","gqlgen_generate"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

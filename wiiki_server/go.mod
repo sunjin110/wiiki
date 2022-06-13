@@ -5,6 +5,7 @@ go 1.17
 require (
 	bitbucket.org/liamstask/goose v0.0.0-20150115234039-8488cc47d90c
 	github.com/99designs/gqlgen v0.17.9
+	github.com/go-xorm/xorm v0.7.9
 	github.com/lib/pq v1.10.6
 	github.com/pkg/errors v0.9.1
 	github.com/vektah/gqlparser/v2 v2.4.4
@@ -29,4 +30,6 @@ require (
 	golang.org/x/tools v0.1.10 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	xorm.io/builder v0.3.6 // indirect
+	xorm.io/core v0.7.2-0.20190928055935-90aeac8d08eb // indirect
 )
