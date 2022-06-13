@@ -13,3 +13,8 @@ type Postgres struct {
 	User     string `toml:"user"`
 	Password string `toml:"password"`
 }
+
+func New(path string) *WiikiConfig {
+
+	return nil
+}
