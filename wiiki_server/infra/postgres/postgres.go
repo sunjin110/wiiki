@@ -13,19 +13,14 @@ import (
 
 // https://github.com/go-xorm/xorm
 
-func New(conf *config.Postgres) error {
+func New(conf *config.Postgres) (*xorm.Engine, error) {
 
-	// TODO
-
-	// conf.
-	_, err := xorm.NewEngine("postgres", "")
+	engine, err := xorm.NewEngine("postgres", "")
 	if err != nil {
-		return wiikierr.Bind(err, "FailedCreateXormEngine", "")
+		return nil, wiikierr.Bind(err, "FailedCreateXormEngine", "")
 	}
 
-	// engine
-
-	return nil
+	return engine, nil
 }
 
 func Connect() error {
