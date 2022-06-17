@@ -14,7 +14,6 @@ func GetBytes(path string) ([]byte, error) {
 	}
 	defer fp.Close()
 
-	// buf := &bufio
 	b, err := io.ReadAll(fp)
 	if err != nil {
 		return nil, wiikierr.Bind(err, wiikierr.FailedReadFile, "path=%s", path)
