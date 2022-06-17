@@ -1,0 +1,19 @@
+name: pull-request-server
+
+on:
+  pull_request:
+    paths:
+      - "wiiki_server/**"
+    branches: [main]
+  workflow_dispatch:
+    
+defaults:
+  run:
+    working-directory: wiiki_server
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v2
+      - run: make test_on_docker
