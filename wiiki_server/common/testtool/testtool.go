@@ -3,6 +3,7 @@ package testtool
 import (
 	"context"
 	"log"
+	"os"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -14,7 +15,14 @@ import (
 )
 
 func Config() *config.WiikiConfig {
+
+	testMode := os.Getenv("TEST_MODE")
+	log.Println("================== testMode is ", testMode)
+
 	testConfigPath := filepath.Join(TestRootDir(), "config", "local.toml")
+	if testMode == "docker" {
+		testConfigPath = filepath.Join(TestRootDir(), "config", "docker.toml")
+	}
 	conf, err := config.New(testConfigPath)
 	Chk(err)
 	return conf

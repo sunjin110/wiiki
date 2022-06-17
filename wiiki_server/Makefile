@@ -20,3 +20,6 @@ goose_status:
 
 goose_build:
 	go build -o goose cmd/migration_postgres/main.go
+
+test_on_docker:
+	docker-compose -f ./docker/docker-compose.test.yml up --build --exit-code-from api

@@ -1,0 +1,9 @@
+env="local"
+port="8080"
+
+[[postgresses]]
+host="wiiki_testdb"
+port="5432"
+dbname="test_wiiki"
+user="wiiki_user"
+password="pass"

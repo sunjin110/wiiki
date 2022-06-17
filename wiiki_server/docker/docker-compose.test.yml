@@ -1,0 +1,32 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ../
+      dockerfile: ./docker/test.Dockerfile
+    environment:
+      - DB_USERNAME=wiiki_user
+      - DB_PASSWORD=pass
+      - DB_HOST=wiiki_testdb
+      - DB_NAME=test_wiiki
+      - DB_PORT=5432
+      - TEST_MODE=docker
+    command:
+     - "/bin/sh"
+     - "-c"
+     - "sh ./docker/script/wait_for_postgres.sh wiiki_testdb && ./docker/script/migrate.sh  && go test ./..."
+    depends_on:
+      - testdb
+
+  testdb:
+    image: postgres:latest
+    restart: always
+    hostname: wiiki_testdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass
+      - TZ="Asia/Tokyo"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./test_init:/docker-entrypoint-initdb.d
