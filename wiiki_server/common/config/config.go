@@ -1,5 +1,10 @@
 package config
 
+import (
+	"wiiki_server/common/utils/fileutil"
+	"wiiki_server/common/utils/tomlutil"
+)
+
 type WiikiConfig struct {
 	Env      string      `toml:"env"`
 	Port     string      `toml:"port"`
@@ -14,7 +19,15 @@ type Postgres struct {
 	Password string `toml:"password"`
 }
 
-func New(path string) *WiikiConfig {
-
-	return nil
+func New(path string) (*WiikiConfig, error) {
+	b, err := fileutil.GetBytes(path)
+	if err != nil {
+		return nil, err
+	}
+	conf := &WiikiConfig{}
+	err = tomlutil.Unmarshal(b, conf)
+	if err != nil {
+		return nil, err
+	}
+	return conf, nil
 }

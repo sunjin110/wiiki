@@ -8,20 +8,14 @@ import (
 	"runtime"
 	"time"
 	"wiiki_server/common/config"
-	"wiiki_server/common/utils/fileutil"
 	"wiiki_server/common/utils/jsonutil"
-	"wiiki_server/common/utils/tomlutil"
 	"wiiki_server/common/wiikictx"
 	"wiiki_server/infra/postgres"
 )
 
 func Config() *config.WiikiConfig {
 	testConfigPath := filepath.Join(TestRootDir(), "config", "local.toml")
-
-	b, err := fileutil.GetBytes(testConfigPath)
-	Chk(err)
-	conf := &config.WiikiConfig{}
-	err = tomlutil.Unmarshal(b, conf)
+	conf, err := config.New(testConfigPath)
 	Chk(err)
 	return conf
 }
