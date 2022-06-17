@@ -2,7 +2,7 @@ package jsonutil
 
 import (
 	"encoding/json"
-	"wiiki_server/infra/common/wiikierr"
+	"wiiki_server/common/wiikierr"
 )
 
 func Marshal(obj interface{}) (string, error) {
