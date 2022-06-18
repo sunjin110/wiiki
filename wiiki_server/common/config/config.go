@@ -5,10 +5,17 @@ import (
 	"wiiki_server/common/utils/tomlutil"
 )
 
+const (
+	EnvLocal      = "local"
+	EnvDevelop    = "develop"
+	EnvStating    = "staging"
+	EnvProduction = "production"
+)
+
 type WiikiConfig struct {
-	Env      string      `toml:"env"`
-	Port     string      `toml:"port"`
-	Postgres []*Postgres `toml:"postgresses"`
+	Env      string    `toml:"env"`
+	Port     string    `toml:"port"`
+	Postgres *Postgres `toml:"postgres"`
 }
 
 type Postgres struct {

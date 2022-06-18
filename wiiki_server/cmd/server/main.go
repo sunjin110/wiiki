@@ -1,23 +1,72 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"wiiki_server/common/config"
+	"wiiki_server/common/wiikierr"
+	"wiiki_server/domain/usecase"
 	"wiiki_server/infra/graph"
 	"wiiki_server/infra/graph/generated"
+	"wiiki_server/infra/graph/middleware"
+	"wiiki_server/infra/logger"
+	"wiiki_server/infra/postgres"
+	"wiiki_server/infra/postgres/psglrepository"
+
+	"github.com/go-chi/chi/v5"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 )
 
+var (
+	configPath = flag.String("f", "config/local.toml", "config file path")
+)
+
 func main() {
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	flag.Parse()
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	// setup
+	log.Println("read config file")
+	conf, err := config.New(*configPath)
+	wiikierr.MustNil(err)
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", 8080), nil))
+	// logger
+	logger, err := logger.New(conf)
+	wiikierr.MustNil(err)
+
+	// postgres
+	log.Println("new postgres")
+	postgresEngine, err := postgres.New(conf.Postgres)
+	wiikierr.MustNil(err)
+
+	// repository
+	todoRepository := psglrepository.NewTodo()
+
+	// usecase
+	todoUsecase := usecase.NewTodo(todoRepository)
+
+	// resolver
+	resolver := &graph.Resolver{
+		TodoUsecase: todoUsecase,
+	}
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
+
+	// middleware
+	errHandlingMiddleware := middleware.NewErrorHandling(logger)
+	transactionMiddleware := middleware.NewTransactionMiddleware(postgresEngine)
+
+	r := chi.NewRouter()
+
+	r.Get("/", playground.Handler("GraphQL playground", "/query"))
+	r.With(errHandlingMiddleware.ErrorHandling(), transactionMiddleware.Transaction()).Post("/query", srv.ServeHTTP)
+
+	log.Println("======== start wiiki server ==========")
+	log.Printf("listen : %s\n", conf.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", conf.Port), r))
 
 }

@@ -28,7 +28,7 @@ func Config() *config.WiikiConfig {
 
 func Context() (context.Context, func(commit bool)) {
 	conf := Config()
-	engine, err := postgres.New(conf.Postgres[0])
+	engine, err := postgres.New(conf.Postgres)
 	Chk(err)
 
 	transactionSession := engine.NewSession()
