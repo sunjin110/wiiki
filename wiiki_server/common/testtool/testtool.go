@@ -17,8 +17,6 @@ import (
 func Config() *config.WiikiConfig {
 
 	testMode := os.Getenv("TEST_MODE")
-	log.Println("================== testMode is ", testMode)
-
 	testConfigPath := filepath.Join(TestRootDir(), "config", "local.toml")
 	if testMode == "docker" {
 		testConfigPath = filepath.Join(TestRootDir(), "config", "docker.toml")
