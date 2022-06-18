@@ -14,7 +14,7 @@ func Test(t *testing.T) {
 
 		conf := testtool.Config()
 
-		engine, err := postgres.New(conf.Postgres[0])
+		engine, err := postgres.New(conf.Postgres)
 		if err != nil {
 			t.Fatal(err)
 		}

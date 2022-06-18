@@ -21,6 +21,14 @@ func (err *Error) Log() string {
 	return fmt.Sprintf(err.format, err.args...)
 }
 
+func (err *Error) Code() string {
+	return err.code
+}
+
+func (err *Error) Cause() error {
+	return err.cause
+}
+
 func StackTrace(err error) {
 
 	innerErr := err
@@ -69,4 +77,10 @@ func Bind(err error, code string, format string, args ...interface{}) error {
 func IsWiikiError(err error) bool {
 	_, ok := err.(*Error)
 	return ok
+}
+
+func MustNil(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

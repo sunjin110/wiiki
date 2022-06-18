@@ -2,6 +2,7 @@ package wiikictx
 
 import (
 	"context"
+	"sync"
 	"time"
 	"wiiki_server/common/wiikierr"
 
@@ -11,8 +12,9 @@ import (
 type ctxKey string
 
 const (
-	TransactionKey ctxKey = "wiiki-transaction"
-	CommonKey      ctxKey = "wiiki-common"
+	TransactionKey    ctxKey = "wiiki-transaction"
+	CommonKey         ctxKey = "wiiki-common"
+	ErrorPresenterKey ctxKey = "wiiki-error-presenter"
 )
 
 type Transaction struct {
@@ -79,4 +81,42 @@ func GetTxTime(ctx context.Context) (time.Time, error) {
 		return time.Time{}, err
 	}
 	return common.TxTime, nil
+}
+
+// Only use middleware and handler
+type ErrorPresenter struct {
+	errors    []error
+	errorsMut sync.Mutex
+}
+
+func WithErrorPresenter(ctx context.Context) context.Context {
+	return context.WithValue(ctx, ErrorPresenterKey, &ErrorPresenter{
+		errors:    []error{},
+		errorsMut: sync.Mutex{},
+	})
+}
+
+func GetErrorPresenter(ctx context.Context) *ErrorPresenter {
+	val, ok := ctx.Value(ErrorPresenterKey).(*ErrorPresenter)
+	if !ok {
+		panic(wiikierr.FailedGetErrorPresenterFromCtx)
+	}
+	return val
+}
+
+func AddError(ctx context.Context, err error) {
+	errPresenter := GetErrorPresenter(ctx)
+	errPresenter.errorsMut.Lock()
+	defer errPresenter.errorsMut.Unlock()
+	errPresenter.errors = append(errPresenter.errors, err)
+}
+
+func GetErrorList(ctx context.Context) []error {
+	errPresenter := GetErrorPresenter(ctx)
+	errPresenter.errorsMut.Lock()
+	defer errPresenter.errorsMut.Unlock()
+	if len(errPresenter.errors) == 0 {
+		return nil
+	}
+	return errPresenter.errors
 }

@@ -1,34 +1,33 @@
-
-
 extend type Query {
-    todos: [Todo!]!
+  todos(done: Boolean): [Todo!]!
+  todo(todoID: ID!): Todo!
 }
 
 extend type Mutation {
-    createTodo(input: NewTodo!): Todo!
-    deleteTodo(input: TodoId!): Boolean!
-    updateTodo(input: UpdateTodo): Boolean!
+  createTodo(input: NewTodo!): Todo!
+  deleteTodo(input: TodoId!): Boolean!
+  updateTodo(input: UpdateTodo): Boolean!
 }
 
 type Todo {
-    id: ID!
-    text: String!
-    done: Boolean!
-    user: User!
+  id: ID!
+  text: String!
+  done: Boolean!
+  user: User!
 }
 
 input NewTodo {
-    text: String!
-    userId: String!
+  text: String!
+  userId: String!
 }
 
 input TodoId {
-    id: ID!
+  id: ID!
 }
 
 input UpdateTodo {
-    id: ID!
-    text: String
-    done: Boolean
-    userId: String
+  id: ID!
+  text: String
+  done: Boolean
+  userId: String
 }
