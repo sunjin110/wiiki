@@ -10,10 +10,11 @@ func Todo(todo *repomodel.Todo) *graphmodel.Todo {
 		return nil
 	}
 	return &graphmodel.Todo{
-		ID:   todo.ID,
-		Text: todo.Text,
-		Done: todo.Done,
-		User: nil,
+		ID:     todo.ID,
+		Text:   todo.Text,
+		Done:   todo.Done,
+		UserID: todo.UserID,
+		User:   nil,
 	}
 }
 

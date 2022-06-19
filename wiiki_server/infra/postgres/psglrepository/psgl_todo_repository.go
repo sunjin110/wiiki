@@ -21,7 +21,7 @@ func NewTodo() repository.Todo {
 
 func (impl *todoRepoImpl) List(ctx context.Context) ([]*repomodel.Todo, error) {
 
-	db, err := wiikictx.GetDB(ctx)
+	db, err := wiikictx.GetReadDB(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (impl *todoRepoImpl) List(ctx context.Context) ([]*repomodel.Todo, error) {
 
 func (impl *todoRepoImpl) Get(ctx context.Context, todoID string) (*repomodel.Todo, error) {
 
-	db, err := wiikictx.GetDB(ctx)
+	db, err := wiikictx.GetReadDB(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -45,6 +45,14 @@ func GetDB(ctx context.Context) (*xorm.Session, error) {
 	return tx.TransactionDB, nil
 }
 
+func GetReadDB(ctx context.Context) (*xorm.Session, error) {
+	tx, err := GetTransaction(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return tx.ReadOnlyDB, nil
+}
+
 func GetReadOnlyDB(ctx context.Context) (*xorm.Session, error) {
 	tx, err := GetTransaction(ctx)
 	if err != nil {
