@@ -18,12 +18,14 @@ type User {
 input NewUser {
   name: String!
   email: String!
+  password: String!
 }
 
 input UpdateUser {
   id: ID!
   name: String
   email: String
+  password: String
 }
 
 input UserId {
