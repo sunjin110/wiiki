@@ -52,8 +52,9 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string, email *string) (*model.User, error) {
-	// user, err := r.UserUsecase.Get(ctx, )
-
-	// panic(fmt.Errorf("not implemented"))
-	return nil, nil
+	user, err := r.UserUsecase.FindOne(ctx, id, email)
+	if err != nil {
+		return nil, err
+	}
+	return presenter.User(user), nil
 }
