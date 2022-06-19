@@ -13,6 +13,18 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) DeleteUser(ctx context.Context, input model.UserID) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUser) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) User(ctx context.Context, id *string, email *string) (*model.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }

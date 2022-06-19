@@ -8,7 +8,8 @@ type NewTodo struct {
 }
 
 type NewUser struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 type NoopInput struct {
@@ -37,7 +38,18 @@ type UpdateTodo struct {
 	UserID *string `json:"userId"`
 }
 
+type UpdateUser struct {
+	ID    string  `json:"id"`
+	Name  *string `json:"name"`
+	Email *string `json:"email"`
+}
+
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type UserID struct {
+	ID string `json:"id"`
 }
