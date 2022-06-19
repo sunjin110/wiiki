@@ -9,16 +9,17 @@ import (
 	"wiiki_server/domain/repository"
 )
 
-const TableName = "todos"
-
 type todoRepoImpl struct {
+	tableName string
 }
 
 func NewTodo() repository.Todo {
-	return &todoRepoImpl{}
+	return &todoRepoImpl{
+		tableName: "todos",
+	}
 }
 
-func (*todoRepoImpl) List(ctx context.Context) ([]*repomodel.Todo, error) {
+func (impl *todoRepoImpl) List(ctx context.Context) ([]*repomodel.Todo, error) {
 
 	db, err := wiikictx.GetDB(ctx)
 	if err != nil {
@@ -27,15 +28,15 @@ func (*todoRepoImpl) List(ctx context.Context) ([]*repomodel.Todo, error) {
 
 	var todoList []*repomodel.Todo
 
-	err = db.Table(TableName).Find(&todoList)
+	err = db.Table(impl.tableName).Find(&todoList)
 	if err != nil {
-		return nil, wiikierr.Bind(err, wiikierr.FailedFindRepository, "table=%s", TableName)
+		return nil, wiikierr.Bind(err, wiikierr.FailedFindRepository, "table=%s", impl.tableName)
 	}
 
 	return todoList, nil
 }
 
-func (*todoRepoImpl) Get(ctx context.Context, todoID string) (*repomodel.Todo, error) {
+func (impl *todoRepoImpl) Get(ctx context.Context, todoID string) (*repomodel.Todo, error) {
 
 	db, err := wiikictx.GetDB(ctx)
 	if err != nil {
@@ -43,9 +44,9 @@ func (*todoRepoImpl) Get(ctx context.Context, todoID string) (*repomodel.Todo, e
 	}
 
 	todo := &repomodel.Todo{}
-	isExists, err := db.Table(TableName).Where("id = ?", todoID).Get(todo)
+	isExists, err := db.Table(impl.tableName).Where("id = ?", todoID).Get(todo)
 	if err != nil {
-		return nil, wiikierr.Bind(err, wiikierr.FailedGetRepository, "table=%s, todoID=%s", TableName, todoID)
+		return nil, wiikierr.Bind(err, wiikierr.FailedGetRepository, "table=%s, todoID=%s", impl.tableName, todoID)
 	}
 
 	if !isExists {
@@ -54,16 +55,16 @@ func (*todoRepoImpl) Get(ctx context.Context, todoID string) (*repomodel.Todo, e
 	return todo, nil
 }
 
-func (*todoRepoImpl) Insert(ctx context.Context, todo *repomodel.Todo) error {
+func (impl *todoRepoImpl) Insert(ctx context.Context, todo *repomodel.Todo) error {
 
 	db, err := wiikictx.GetDB(ctx)
 	if err != nil {
 		return err
 	}
 
-	_, err = db.Table(TableName).Insert(todo)
+	_, err = db.Table(impl.tableName).Insert(todo)
 	if err != nil {
-		return wiikierr.Bind(err, wiikierr.FailedInsertRepository, "table=%s, data=%v", TableName, todo)
+		return wiikierr.Bind(err, wiikierr.FailedInsertRepository, "table=%s, data=%v", impl.tableName, todo)
 	}
 
 	return nil
@@ -74,25 +75,25 @@ func (impl *todoRepoImpl) Update(ctx context.Context, todoID string, updateTodo 
 	if err != nil {
 		return err
 	}
-	_, err = db.Table(TableName).Where("id = ?", todoID).Update(
+	_, err = db.Table(impl.tableName).Where("id = ?", todoID).Update(
 		impl.generateUpdateMap(updateTodo),
 	)
 	if err != nil {
-		return wiikierr.Bind(err, wiikierr.FailedUpdateRepository, "table=%s, id=%s, update=%v", TableName, todoID, updateTodo)
+		return wiikierr.Bind(err, wiikierr.FailedUpdateRepository, "table=%s, id=%s, update=%v", impl.tableName, todoID, updateTodo)
 	}
 	return nil
 }
 
-func (*todoRepoImpl) Delete(ctx context.Context, todoID string) error {
+func (impl *todoRepoImpl) Delete(ctx context.Context, todoID string) error {
 
 	db, err := wiikictx.GetDB(ctx)
 	if err != nil {
 		return err
 	}
 
-	_, err = db.Table(TableName).Where("id = ?", todoID).Delete(&repomodel.Todo{})
+	_, err = db.Table(impl.tableName).Where("id = ?", todoID).Delete(&repomodel.Todo{})
 	if err != nil {
-		return wiikierr.Bind(err, wiikierr.FailedDeleteRepository, "table=%s, id=%s", TableName, todoID)
+		return wiikierr.Bind(err, wiikierr.FailedDeleteRepository, "table=%s, id=%s", impl.tableName, todoID)
 	}
 
 	return nil
@@ -102,6 +103,7 @@ func (*todoRepoImpl) generateUpdateMap(todo *repomodel.UpdateTodo) map[string]in
 	m := map[string]interface{}{
 		"text":       todo.Text,
 		"done":       todo.Done,
+		"user_id":    todo.UserID,
 		"created_at": todo.CreatedAt,
 		"updated_at": todo.UpdatedAt,
 	}
