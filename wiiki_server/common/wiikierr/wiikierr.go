@@ -2,6 +2,7 @@ package wiikierr
 
 import (
 	"fmt"
+	"wiiki_server/common/wiikictx"
 
 	"github.com/pkg/errors"
 )
@@ -47,15 +48,20 @@ func StackTrace(err error) {
 
 func New(code string, format string, args ...interface{}) error {
 
-	return &Error{
+	err := &Error{
 		cause:  errors.New(code),
 		code:   code,
 		format: format,
 		args:   args,
 	}
+	wiikictx.AddError(ctx, err)
+
+	return err
 }
 
 func Bind(err error, code string, format string, args ...interface{}) error {
+
+	wiikictx.AddError(ctx, err)
 
 	if !IsWiikiError(err) {
 		return &Error{
