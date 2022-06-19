@@ -57,8 +57,9 @@ func main() {
 
 	// resolver
 	resolver := &graph.Resolver{
-		TodoUsecase: todoUsecase,
-		UserUsecase: userUsecase,
+		PostgresEngine: postgresEngine,
+		TodoUsecase:    todoUsecase,
+		UserUsecase:    userUsecase,
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
@@ -66,12 +67,12 @@ func main() {
 	// middleware
 	errHandlingMiddleware := middleware.NewErrorHandling(logger, conf)
 	authMiddleware := middleware.NewAuth()
-	transactionMiddleware := middleware.NewTransactionMiddleware(postgresEngine)
+	// transactionMiddleware := middleware.NewTransactionMiddleware(postgresEngine)
 
 	r := chi.NewRouter()
 
 	r.Get("/", playground.Handler("GraphQL playground", "/query"))
-	r.With(errHandlingMiddleware.ErrorHandling(), authMiddleware.Auth(), transactionMiddleware.Transaction()).Post("/query", srv.ServeHTTP)
+	r.With(errHandlingMiddleware.ErrorHandling(), authMiddleware.Auth()).Post("/query", srv.ServeHTTP)
 
 	log.Println("======== start wiiki server ==========")
 	log.Printf("listen : %s\n", conf.Port)

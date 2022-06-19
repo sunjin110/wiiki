@@ -76,6 +76,7 @@ func TestTodo(t *testing.T) {
 
 					err := repo.Update(ctx, todoID, updateTodo)
 					assert.Nil(t, err)
+					close(true)
 
 					updatedTodo, err := repo.Get(ctx, todoID)
 					assert.Nil(t, err)

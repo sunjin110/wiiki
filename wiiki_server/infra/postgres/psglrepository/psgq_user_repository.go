@@ -20,7 +20,7 @@ func NewUser() repository.User {
 }
 
 func (impl *userRepoImpl) List(ctx context.Context) ([]*repomodel.User, error) {
-	db, err := wiikictx.GetDB(ctx)
+	db, err := wiikictx.GetReadDB(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (impl *userRepoImpl) List(ctx context.Context) ([]*repomodel.User, error) {
 }
 
 func (impl *userRepoImpl) Get(ctx context.Context, userID string) (*repomodel.User, error) {
-	db, err := wiikictx.GetDB(ctx)
+	db, err := wiikictx.GetReadDB(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (impl *userRepoImpl) Get(ctx context.Context, userID string) (*repomodel.Us
 
 func (impl *userRepoImpl) GetByEmail(ctx context.Context, email string) (*repomodel.User, error) {
 
-	db, err := wiikictx.GetDB(ctx)
+	db, err := wiikictx.GetReadDB(ctx)
 	if err != nil {
 		return nil, err
 	}

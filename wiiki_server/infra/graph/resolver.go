@@ -2,6 +2,8 @@ package graph
 
 import (
 	"wiiki_server/domain/usecase"
+
+	"xorm.io/xorm"
 )
 
 // This file will not be regenerated automatically.
@@ -9,6 +11,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	TodoUsecase usecase.Todo
-	UserUsecase usecase.User
+	PostgresEngine *xorm.Engine
+	TodoUsecase    usecase.Todo
+	UserUsecase    usecase.User
 }
