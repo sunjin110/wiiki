@@ -22,4 +22,8 @@ const (
 	FailedRollbackTransaction      = "FailedRollbackTransaction"
 	FailedCommitTransaction        = "FailedCommitTransaction"
 	FailedNewLogger                = "FailedNewLogger"
+	FailedGenerateHash             = "FailedGenerateHash"
+	FailedMismatchHashAndPassword  = "FailedMismatchHashAndPassword"
+	FailedCompareHashAndPassword   = "FailedMismatchHashAndPassword"
+	FailedHashPassword             = "FailedHashPassword"
 )

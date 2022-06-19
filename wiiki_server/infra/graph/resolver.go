@@ -10,4 +10,5 @@ import (
 
 type Resolver struct {
 	TodoUsecase usecase.Todo
+	UserUsecase usecase.User
 }

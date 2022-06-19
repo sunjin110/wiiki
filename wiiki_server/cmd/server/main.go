@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"wiiki_server/common/config"
 	"wiiki_server/common/wiikierr"
+	"wiiki_server/domain/service"
 	"wiiki_server/domain/usecase"
 	"wiiki_server/infra/graph"
 	"wiiki_server/infra/graph/generated"
@@ -45,13 +46,19 @@ func main() {
 
 	// repository
 	todoRepository := psglrepository.NewTodo()
+	userRepository := psglrepository.NewUser()
+
+	// hash
+	hashService := service.NewHash(10)
 
 	// usecase
 	todoUsecase := usecase.NewTodo(todoRepository)
+	userUsecase := usecase.NewUser(userRepository, hashService)
 
 	// resolver
 	resolver := &graph.Resolver{
 		TodoUsecase: todoUsecase,
+		UserUsecase: userUsecase,
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
