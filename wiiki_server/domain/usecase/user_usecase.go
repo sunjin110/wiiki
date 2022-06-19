@@ -87,5 +87,23 @@ func (impl *userImpl) FindOne(ctx context.Context, userID *string, email *string
 		return nil, wiikierr.New(wiikierr.InvalidError, "userID and email are empty")
 	}
 
-	return nil, nil
+	if userID != nil {
+		user, err := impl.userRepository.Get(ctx, *userID)
+		if err != nil {
+			return nil, err
+		}
+		if user == nil {
+			return nil, nil
+		}
+		if email != nil && user.Email != *email {
+			return nil, nil
+		}
+		return user, nil
+	}
+
+	user, err := impl.userRepository.GetByEmail(ctx, *email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

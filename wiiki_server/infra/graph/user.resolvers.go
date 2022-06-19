@@ -55,4 +55,5 @@ func (r *queryResolver) User(ctx context.Context, id *string, email *string) (*m
 	// user, err := r.UserUsecase.Get(ctx, )
 
 	// panic(fmt.Errorf("not implemented"))
+	return nil, nil
 }
