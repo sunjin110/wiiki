@@ -6,6 +6,11 @@ import (
 )
 
 func User(user *repomodel.User) *graphmodel.User {
+
+	if user == nil {
+		return nil
+	}
+
 	return &graphmodel.User{
 		ID:    user.ID,
 		Name:  user.Name,

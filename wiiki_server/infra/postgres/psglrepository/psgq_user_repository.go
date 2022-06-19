@@ -49,6 +49,25 @@ func (impl *userRepoImpl) Get(ctx context.Context, userID string) (*repomodel.Us
 	}
 	return user, nil
 }
+
+func (impl *userRepoImpl) GetByEmail(ctx context.Context, email string) (*repomodel.User, error) {
+
+	db, err := wiikictx.GetDB(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user := &repomodel.User{}
+	isExists, err := db.Table(impl.tableName).Where("email = ?", email).Get(user)
+	if err != nil {
+		return nil, wiikierr.Bind(err, wiikierr.FailedGetRepository, "table=%s, email=%s", impl.tableName, email)
+	}
+	if !isExists {
+		return nil, nil
+	}
+	return user, nil
+}
+
 func (impl *userRepoImpl) Insert(ctx context.Context, user *repomodel.User) error {
 	db, err := wiikictx.GetDB(ctx)
 	if err != nil {

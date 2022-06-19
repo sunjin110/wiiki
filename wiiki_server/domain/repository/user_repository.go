@@ -7,6 +7,7 @@ import (
 
 type User interface {
 	Get(ctx context.Context, userID string) (*repomodel.User, error)
+	GetByEmail(ctx context.Context, email string) (*repomodel.User, error)
 	List(ctx context.Context) ([]*repomodel.User, error)
 	Insert(ctx context.Context, user *repomodel.User) error
 	Delete(ctx context.Context, userID string) error
