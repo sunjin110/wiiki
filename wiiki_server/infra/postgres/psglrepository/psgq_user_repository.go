@@ -81,6 +81,7 @@ func (*userRepoImpl) generateUpdateMap(user *repomodel.UpdateUser) map[string]in
 	m := map[string]interface{}{
 		"name":       user.Name,
 		"email":      user.Email,
+		"password":   user.Password,
 		"created_at": user.CreatedAt,
 		"updated_at": user.UpdatedAt,
 	}

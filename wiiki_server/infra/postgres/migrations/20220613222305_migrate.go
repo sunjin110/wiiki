@@ -17,7 +17,7 @@ func upMigrate(tx *sql.Tx) error {
 		`
 			create table if not exists users (
 				id varchar(24) not null,
-				username varchar(256) not null,
+				name varchar(256) not null,
 				password varchar(256) not null,
 				email varchar(255) not null,
 				created_at timestamp,
@@ -61,8 +61,8 @@ func upMigrate(tx *sql.Tx) error {
 func downMigrate(tx *sql.Tx) error {
 	queryList := []string{
 		`drop table if exists links;`,
-		`drop table if exists users;`,
 		`drop table if exists todos;`,
+		`drop table if exists users;`,
 	}
 	for _, query := range queryList {
 		_, err := tx.Exec(query)

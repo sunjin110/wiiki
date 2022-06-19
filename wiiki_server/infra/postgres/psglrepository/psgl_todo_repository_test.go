@@ -20,14 +20,29 @@ func TestTodo(t *testing.T) {
 		t.Run("Insert", func(t *testing.T) {
 			ctx, close := testtool.Context()
 			defer close(true)
-
 			txTime := time.Now()
 
+			// test user
+			userRepo := psglrepository.NewUser()
+			userID := idutil.New()
+			err := userRepo.Insert(ctx, &repomodel.User{
+				ID:        userID,
+				Name:      "test_user",
+				Email:     "test@test.com",
+				Password:  "password",
+				CreatedAt: txTime,
+				UpdatedAt: txTime,
+			})
+			if !assert.Nil(t, err) {
+				panic(err)
+			}
+
 			repo := psglrepository.NewTodo()
-			err := repo.Insert(ctx, &repomodel.Todo{
+			err = repo.Insert(ctx, &repomodel.Todo{
 				ID:        idutil.New(),
 				Text:      "sunjin",
 				Done:      true,
+				UserID:    userID,
 				CreatedAt: txTime,
 				UpdatedAt: txTime,
 			})
