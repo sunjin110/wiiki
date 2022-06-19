@@ -10,7 +10,11 @@ import (
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+
+	// r.UserUsecase.Create(ctx, txTime, )
+
+	// panic(fmt.Errorf("not implemented"))
+	panic("")
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, input model.UserID) (bool, error) {
