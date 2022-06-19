@@ -6,6 +6,9 @@ import (
 )
 
 func Todo(todo *repomodel.Todo) *graphmodel.Todo {
+	if todo == nil {
+		return nil
+	}
 	return &graphmodel.Todo{
 		ID:   todo.ID,
 		Text: todo.Text,

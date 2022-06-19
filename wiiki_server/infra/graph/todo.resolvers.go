@@ -5,8 +5,8 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"time"
+	"wiiki_server/common/wiikictx"
 	"wiiki_server/infra/graph/model"
 	"wiiki_server/infra/graph/presenter"
 )
@@ -28,7 +28,15 @@ func (r *mutationResolver) DeleteTodo(ctx context.Context, input model.TodoID) (
 }
 
 func (r *mutationResolver) UpdateTodo(ctx context.Context, input *model.UpdateTodo) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	txTime, err := wiikictx.GetTxTime(ctx)
+	if err != nil {
+		return false, err
+	}
+	err = r.TodoUsecase.Update(ctx, txTime, input.ID, input.Text, input.Done, input.UserID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (r *queryResolver) Todos(ctx context.Context, done *bool) ([]*model.Todo, error) {
@@ -40,5 +48,9 @@ func (r *queryResolver) Todos(ctx context.Context, done *bool) ([]*model.Todo, e
 }
 
 func (r *queryResolver) Todo(ctx context.Context, todoID string) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	todo, err := r.TodoUsecase.Get(ctx, todoID)
+	if err != nil {
+		return nil, err
+	}
+	return presenter.Todo(todo), nil
 }
