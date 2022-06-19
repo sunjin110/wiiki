@@ -11,8 +11,9 @@ import (
 type Todo interface {
 	Create(ctx context.Context, txTime time.Time, text string, userID string) (*repomodel.Todo, error)
 	Delete(ctx context.Context, todoID string) error
-	Update(ctx context.Context, todoID string, text *string, done *bool, userID *string) error
+	Update(ctx context.Context, txTime time.Time, todoID string, text *string, done *bool, userID *string) error
 	List(ctx context.Context) ([]*repomodel.Todo, error)
+	Get(ctx context.Context, todoID string) (*repomodel.Todo, error)
 }
 
 func NewTodo(todoRepository repository.Todo) Todo {
@@ -47,10 +48,20 @@ func (impl *todoImpl) Delete(ctx context.Context, todoID string) error {
 	return impl.Delete(ctx, todoID)
 }
 
-func (*todoImpl) Update(ctx context.Context, todoID string, text *string, done *bool, userID *string) error {
-	return nil
+func (impl *todoImpl) Update(ctx context.Context, txTime time.Time, todoID string, text *string, done *bool, userID *string) error {
+	updateTodo := &repomodel.UpdateTodo{
+		Text:      text,
+		Done:      done,
+		UserID:    userID,
+		UpdatedAt: &txTime,
+	}
+	return impl.todoRepository.Update(ctx, todoID, updateTodo)
 }
 
 func (impl *todoImpl) List(ctx context.Context) ([]*repomodel.Todo, error) {
 	return impl.todoRepository.List(ctx)
+}
+
+func (impl *todoImpl) Get(ctx context.Context, todoID string) (*repomodel.Todo, error) {
+	return impl.todoRepository.Get(ctx, todoID)
 }
