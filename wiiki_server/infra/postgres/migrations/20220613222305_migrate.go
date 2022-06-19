@@ -2,7 +2,6 @@ package migrations
 
 import (
 	"database/sql"
-	"fmt"
 	"wiiki_server/common/wiikierr"
 
 	"github.com/pressly/goose/v3"
@@ -16,20 +15,25 @@ func upMigrate(tx *sql.Tx) error {
 
 	queryList := []string{
 		`
-			create table if not exists todos (
+			create table if not exists users (
 				id varchar(24) not null,
-				text varchar(256) not null,
-				done boolean not null,
+				username varchar(256) not null,
+				password varchar(256) not null,
+				email varchar(255) not null,
 				created_at timestamp,
 				updated_at timestamp,
 				primary key (id)
 			);
 		`,
 		`
-			create table if not exists users (
+			create table if not exists todos (
 				id varchar(24) not null,
-				username varchar(256) not null,
-				password varchar(256) not null,
+				text varchar(256) not null,
+				done boolean not null,
+				user_id varchar(24),
+				created_at timestamp,
+				updated_at timestamp,
+				foreign key (user_id) references users(id),
 				primary key (id)
 			);
 		`,
@@ -46,7 +50,6 @@ func upMigrate(tx *sql.Tx) error {
 	}
 
 	for _, query := range queryList {
-		fmt.Println("exec query", query)
 		_, err := tx.Exec(query)
 		if err != nil {
 			return wiikierr.Bind(err, wiikierr.MigrateFailed, "query is %s", query)
@@ -62,7 +65,6 @@ func downMigrate(tx *sql.Tx) error {
 		`drop table if exists todos;`,
 	}
 	for _, query := range queryList {
-		fmt.Println("exec query", query)
 		_, err := tx.Exec(query)
 		if err != nil {
 			return wiikierr.Bind(err, wiikierr.MigrateFailed, "query is %s", query)
