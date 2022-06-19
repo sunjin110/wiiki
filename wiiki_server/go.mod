@@ -13,6 +13,7 @@ require (
 	github.com/stretchr/testify v1.7.2
 	github.com/vektah/gqlparser/v2 v2.4.5
 	go.uber.org/zap v1.21.0
+	golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2
 	xorm.io/xorm v1.3.1
 )
 
