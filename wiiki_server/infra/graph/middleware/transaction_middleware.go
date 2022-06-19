@@ -7,7 +7,6 @@ import (
 	"wiiki_server/common/wiikierr"
 	"wiiki_server/infra/http/middleware"
 
-	"github.com/99designs/gqlgen/graphql"
 	"xorm.io/xorm"
 )
 
@@ -49,8 +48,8 @@ func (impl *transactionImpl) Transaction() func(next http.Handler) http.Handler 
 			next.ServeHTTP(w, r)
 
 			// check error
-			errList := graphql.GetErrors(r.Context())
-			// errList := wiikictx.GetErrorList(r.Context())
+			// errList := graphql.GetErrors(r.Context())
+			errList := wiikictx.GetErrorList(r.Context())
 
 			log.Println("errorList is ", errList)
 
