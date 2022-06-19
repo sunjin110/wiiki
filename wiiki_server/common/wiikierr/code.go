@@ -26,4 +26,5 @@ const (
 	FailedMismatchHashAndPassword  = "FailedMismatchHashAndPassword"
 	FailedCompareHashAndPassword   = "FailedMismatchHashAndPassword"
 	FailedHashPassword             = "FailedHashPassword"
+	InvalidError                   = "InvalidError"
 )

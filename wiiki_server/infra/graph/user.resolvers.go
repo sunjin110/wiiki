@@ -5,30 +5,54 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"wiiki_server/common/wiikictx"
 	"wiiki_server/infra/graph/model"
+	"wiiki_server/infra/graph/presenter"
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	txTime, err := wiikictx.GetTxTime(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	// r.UserUsecase.Create(ctx, txTime, )
-
-	// panic(fmt.Errorf("not implemented"))
-	panic("")
+	user, err := r.UserUsecase.Create(ctx, txTime, input.Name, input.Email, input.Password)
+	if err != nil {
+		return nil, err
+	}
+	return presenter.User(user), nil
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, input model.UserID) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	err := r.UserUsecase.Delete(ctx, input.ID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUser) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	txTime, err := wiikictx.GetTxTime(ctx)
+	if err != nil {
+		return false, err
+	}
+	err = r.UserUsecase.Update(ctx, txTime, input.ID, input.Name, input.Email, input.Password)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	userList, err := r.UserUsecase.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return presenter.UserList(userList), nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string, email *string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	// user, err := r.UserUsecase.Get(ctx, )
+
+	// panic(fmt.Errorf("not implemented"))
 }
