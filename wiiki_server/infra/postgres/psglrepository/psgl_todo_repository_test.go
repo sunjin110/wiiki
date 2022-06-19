@@ -3,6 +3,7 @@ package psglrepository_test
 import (
 	"testing"
 	"time"
+	"wiiki_server/common/ptr"
 	"wiiki_server/common/testtool"
 	"wiiki_server/common/utils/idutil"
 	"wiiki_server/domain/model/repomodel"
@@ -52,10 +53,12 @@ func TestTodo(t *testing.T) {
 
 				t.Run("Update", func(t *testing.T) {
 
-					todo.Done = true
-					todo.Text = "helloooooo!!"
+					updateTodo := &repomodel.UpdateTodo{
+						Done: ptr.ToPtr(true),
+						Text: ptr.ToPtr("helloooooo!!"),
+					}
 
-					err := repo.Update(ctx, todoID, todo)
+					err := repo.Update(ctx, todoID, updateTodo)
 					assert.Nil(t, err)
 
 					updatedTodo, err := repo.Get(ctx, todoID)

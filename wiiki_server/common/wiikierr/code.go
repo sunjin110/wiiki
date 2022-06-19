@@ -17,6 +17,7 @@ const (
 	FailedMarshalToml              = "FailedMarshalToml"
 	FailedOpenFile                 = "FailedOpenFile"
 	FailedReadFile                 = "FailedReadFile"
+	FailedWalkDir                  = "FailedWalkDir"
 	FailedBeginTransaction         = "FailedBeginTransaction"
 	FailedRollbackTransaction      = "FailedRollbackTransaction"
 	FailedCommitTransaction        = "FailedCommitTransaction"

@@ -23,3 +23,6 @@ goose_build:
 
 test_on_docker:
 	docker-compose -f ./docker/docker-compose.test.yml up --build --exit-code-from api
+
+generate:
+	go run ./cmd/code_generate/main.go
