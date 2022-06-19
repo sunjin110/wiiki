@@ -1,6 +1,7 @@
 package psglrepository_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 	"wiiki_server/common/ptr"
@@ -28,7 +29,7 @@ func TestTodo(t *testing.T) {
 			err := userRepo.Insert(ctx, &repomodel.User{
 				ID:        userID,
 				Name:      "test_user",
-				Email:     "test@test.com",
+				Email:     fmt.Sprintf("%s@test.com", userID),
 				Password:  "password",
 				CreatedAt: txTime,
 				UpdatedAt: txTime,
