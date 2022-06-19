@@ -5,15 +5,21 @@ package graph
 
 import (
 	"context"
-	"time"
+	"log"
 	"wiiki_server/common/wiikictx"
 	"wiiki_server/infra/graph/model"
 	"wiiki_server/infra/graph/presenter"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	todo, err := r.TodoUsecase.Create(ctx, time.Now(), input.Text, input.UserID)
+	txTime, err := wiikictx.GetTxTime(ctx)
 	if err != nil {
+		return nil, err
+	}
+
+	todo, err := r.TodoUsecase.Create(ctx, txTime, input.Text, input.UserID)
+	if err != nil {
+		log.Println("error 発生")
 		return nil, err
 	}
 	return presenter.Todo(todo), nil

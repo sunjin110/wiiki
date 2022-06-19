@@ -33,7 +33,5 @@ func TestUser(t *testing.T) {
 			})
 			assert.Nil(t, err)
 		})
-
 	})
-
 }

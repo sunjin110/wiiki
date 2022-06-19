@@ -27,4 +27,5 @@ const (
 	FailedCompareHashAndPassword   = "FailedMismatchHashAndPassword"
 	FailedHashPassword             = "FailedHashPassword"
 	InvalidError                   = "InvalidError"
+	InternalSystemError            = "InternalSystemError"
 )

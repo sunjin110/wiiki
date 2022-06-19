@@ -64,7 +64,7 @@ func main() {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
 	// middleware
-	errHandlingMiddleware := middleware.NewErrorHandling(logger)
+	errHandlingMiddleware := middleware.NewErrorHandling(logger, conf)
 	authMiddleware := middleware.NewAuth()
 	transactionMiddleware := middleware.NewTransactionMiddleware(postgresEngine)
 

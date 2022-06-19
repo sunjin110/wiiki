@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"log"
 	"time"
 	"wiiki_server/common/utils/idutil"
 	"wiiki_server/domain/model/repomodel"
@@ -29,15 +30,17 @@ type todoImpl struct {
 func (impl *todoImpl) Create(ctx context.Context, txTime time.Time, text string, userID string) (*repomodel.Todo, error) {
 
 	repoTodo := &repomodel.Todo{
-		ID:        idutil.New(),
-		Text:      text,
-		Done:      false,
+		ID:   idutil.New(),
+		Text: text,
+		Done: false,
+		// UserID:    userID,
 		CreatedAt: txTime,
 		UpdatedAt: txTime,
 	}
 
 	err := impl.todoRepository.Insert(ctx, repoTodo)
 	if err != nil {
+		log.Println("error ????")
 		return nil, err
 	}
 
