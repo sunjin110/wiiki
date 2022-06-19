@@ -1,0 +1,6 @@
+
+type Update{{.StructName}} struct {
+	{{ range .FieldList }}
+		{{ Name }} {{ Type }} {{ Tag }}
+	{{ end }}
+}

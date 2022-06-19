@@ -2,6 +2,7 @@ package psglrepository
 
 import (
 	"context"
+	"wiiki_server/common"
 	"wiiki_server/common/wiikictx"
 	"wiiki_server/common/wiikierr"
 	"wiiki_server/domain/model/repomodel"
@@ -68,18 +69,17 @@ func (*todoRepoImpl) Insert(ctx context.Context, todo *repomodel.Todo) error {
 	return nil
 }
 
-func (impl *todoRepoImpl) Update(ctx context.Context, todoID string, todo *repomodel.Todo) error {
+func (impl *todoRepoImpl) Update(ctx context.Context, todoID string, updateTodo *repomodel.UpdateTodo) error {
 	db, err := wiikictx.GetDB(ctx)
 	if err != nil {
 		return err
 	}
 	_, err = db.Table(TableName).Where("id = ?", todoID).Update(
-		impl.generateUpdateMap(todo),
+		impl.generateUpdateMap(updateTodo),
 	)
 	if err != nil {
-		return wiikierr.Bind(err, wiikierr.FailedUpdateRepository, "table=%s, id=%s, data=%s", TableName, todoID, todo)
+		return wiikierr.Bind(err, wiikierr.FailedUpdateRepository, "table=%s, id=%s, update=%v", TableName, todoID, updateTodo)
 	}
-
 	return nil
 }
 
@@ -98,11 +98,12 @@ func (*todoRepoImpl) Delete(ctx context.Context, todoID string) error {
 	return nil
 }
 
-func (*todoRepoImpl) generateUpdateMap(todo *repomodel.Todo) map[string]interface{} {
-	return map[string]interface{}{
+func (*todoRepoImpl) generateUpdateMap(todo *repomodel.UpdateTodo) map[string]interface{} {
+	m := map[string]interface{}{
 		"text":       todo.Text,
 		"done":       todo.Done,
 		"created_at": todo.CreatedAt,
 		"updated_at": todo.UpdatedAt,
 	}
+	return common.ExcludeNilFromMap(m)
 }
