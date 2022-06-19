@@ -9,3 +9,7 @@ type Transaction interface {
 type ErrorHandling interface {
 	ErrorHandling() func(http.Handler) http.Handler
 }
+
+type Auth interface {
+	Auth() func(http.Handler) http.Handler
+}

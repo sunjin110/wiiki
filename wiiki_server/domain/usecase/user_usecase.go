@@ -11,11 +11,12 @@ import (
 )
 
 type User interface {
-	Create(ctx context.Context, txTime time.Time, name string, email string, password string) error
+	Create(ctx context.Context, txTime time.Time, name string, email string, password string) (*repomodel.User, error)
 	Delete(ctx context.Context, userID string) error
-	Update(ctx context.Context, userID string, name *string, email *string, password *string) error
+	Update(ctx context.Context, txTime time.Time, userID string, name *string, email *string, password *string) error
 	List(ctx context.Context) ([]*repomodel.User, error)
 	Get(ctx context.Context, userID string) (*repomodel.User, error)
+	FindOne(ctx context.Context, userID *string, email *string) (*repomodel.User, error)
 }
 
 func NewUser(userRepository repository.User, hashService service.Hash) User {
@@ -30,11 +31,11 @@ type userImpl struct {
 	hashService    service.Hash
 }
 
-func (impl *userImpl) Create(ctx context.Context, txTime time.Time, name string, email string, password string) error {
+func (impl *userImpl) Create(ctx context.Context, txTime time.Time, name string, email string, password string) (*repomodel.User, error) {
 
 	hash, err := impl.hashService.Generate(password)
 	if err != nil {
-		return wiikierr.Bind(err, wiikierr.FailedHashPassword, "")
+		return nil, wiikierr.Bind(err, wiikierr.FailedHashPassword, "")
 	}
 
 	user := &repomodel.User{
@@ -44,14 +45,14 @@ func (impl *userImpl) Create(ctx context.Context, txTime time.Time, name string,
 		Password: hash,
 	}
 
-	return impl.userRepository.Insert(ctx, user)
+	return user, impl.userRepository.Insert(ctx, user)
 }
 
 func (impl *userImpl) Delete(ctx context.Context, userID string) error {
 	return impl.userRepository.Delete(ctx, userID)
 }
 
-func (impl *userImpl) Update(ctx context.Context, userID string, name *string, email *string, password *string) error {
+func (impl *userImpl) Update(ctx context.Context, txTime time.Time, userID string, name *string, email *string, password *string) error {
 
 	var hashedPassword *string
 	if password != nil {
@@ -63,9 +64,10 @@ func (impl *userImpl) Update(ctx context.Context, userID string, name *string, e
 	}
 
 	updateUser := &repomodel.UpdateUser{
-		Name:     name,
-		Email:    email,
-		Password: hashedPassword,
+		Name:      name,
+		Email:     email,
+		Password:  hashedPassword,
+		UpdatedAt: &txTime,
 	}
 
 	return impl.userRepository.Update(ctx, userID, updateUser)
@@ -77,4 +79,13 @@ func (impl *userImpl) List(ctx context.Context) ([]*repomodel.User, error) {
 
 func (impl *userImpl) Get(ctx context.Context, userID string) (*repomodel.User, error) {
 	return impl.userRepository.Get(ctx, userID)
+}
+
+func (impl *userImpl) FindOne(ctx context.Context, userID *string, email *string) (*repomodel.User, error) {
+
+	if userID == nil && email == nil {
+		return nil, wiikierr.New(wiikierr.InvalidError, "userID and email are empty")
+	}
+
+	return nil, nil
 }

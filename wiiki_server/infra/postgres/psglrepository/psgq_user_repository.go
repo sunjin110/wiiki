@@ -74,6 +74,19 @@ func (impl *userRepoImpl) Delete(ctx context.Context, userID string) error {
 }
 
 func (impl *userRepoImpl) Update(ctx context.Context, userID string, updateUser *repomodel.UpdateUser) error {
+	db, err := wiikictx.GetDB(ctx)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Table(impl.tableName).Where("id = ?", userID).Update(
+		impl.generateUpdateMap(updateUser),
+	)
+	if err != nil {
+		return wiikierr.Bind(err, wiikierr.FailedUpdateRepository,
+			"table=%s, userID=%s update=%v", impl.tableName, userID, updateUser)
+	}
+
 	return nil
 }
 
