@@ -105,6 +105,11 @@ func GetErrorPresenter(ctx context.Context) *ErrorPresenter {
 }
 
 func AddError(ctx context.Context, err error) {
+
+	if err == nil {
+		return
+	}
+
 	errPresenter := GetErrorPresenter(ctx)
 	errPresenter.errorsMut.Lock()
 	defer errPresenter.errorsMut.Unlock()

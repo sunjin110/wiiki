@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"wiiki_server/common/wiikictx"
 	"wiiki_server/common/wiikierr"
@@ -48,15 +47,9 @@ func (impl *transactionImpl) Transaction() func(next http.Handler) http.Handler 
 			next.ServeHTTP(w, r)
 
 			// check error
-			// errList := graphql.GetErrors(r.Context())
 			errList := wiikictx.GetErrorList(r.Context())
 
-			log.Println("errorList is ", errList)
-
 			if len(errList) > 0 {
-
-				log.Println("エラーがあったよ!!!")
-
 				err := transactionSession.Rollback()
 				if err != nil {
 					err = wiikierr.Bind(err, wiikierr.FailedRollbackTransaction, "postgres db")

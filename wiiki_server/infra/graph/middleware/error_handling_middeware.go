@@ -92,7 +92,6 @@ func (impl *errorHandlingImpl) LogError(errInfoList []*errInfo, r *http.Request,
 		}
 	}
 
-	// impl.logger.Errorw("[WIIKI_ERROR]", keysAndValues...)
 	impl.logger.Infow("[WIIKI_ERROR]", keysAndValues...)
 }
 
