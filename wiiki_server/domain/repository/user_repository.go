@@ -10,4 +10,5 @@ type User interface {
 	List(ctx context.Context) ([]*repomodel.User, error)
 	Insert(ctx context.Context, user *repomodel.User) error
 	Delete(ctx context.Context, userID string) error
+	Update(ctx context.Context, userID string, updateUser *repomodel.UpdateUser) error
 }
