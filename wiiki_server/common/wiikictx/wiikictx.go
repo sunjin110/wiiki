@@ -53,18 +53,18 @@ func GetReadDB(ctx context.Context) (*xorm.Session, error) {
 	return tx.ReadOnlyDB, nil
 }
 
-func GetReadOnlyDB(ctx context.Context) (*xorm.Session, error) {
-	tx, err := GetTransaction(ctx)
-	if err != nil {
-		return nil, err
-	}
+// func GetReadOnlyDB(ctx context.Context) (*xorm.Session, error) {
+// 	tx, err := GetTransaction(ctx)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	if !tx.IsTransaction || tx.ReadOnlyDB == nil {
-		return tx.TransactionDB, nil
-	}
+// 	if !tx.IsTransaction || tx.ReadOnlyDB == nil {
+// 		return tx.TransactionDB, nil
+// 	}
 
-	return tx.TransactionDB, nil
-}
+// 	return tx.ReadOnlyDB, nil
+// }
 
 type Common struct {
 	TxTime      time.Time

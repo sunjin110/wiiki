@@ -9,6 +9,7 @@ import (
 	"wiiki_server/infra/graph/generated"
 	"wiiki_server/infra/graph/model"
 	"wiiki_server/infra/graph/presenter"
+	"wiiki_server/infra/graph/storage"
 	"wiiki_server/infra/postgres"
 )
 
@@ -74,8 +75,10 @@ func (r *queryResolver) Todos(ctx context.Context, done *bool) ([]*model.Todo, e
 
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
 	todoList, err := r.TodoUsecase.List(ctx)
-	if err != nil {
+	defer func() {
 		wiikictx.AddError(ctx, err)
+	}()
+	if err != nil {
 		return nil, err
 	}
 	return presenter.TodoList(todoList), nil
@@ -86,8 +89,11 @@ func (r *queryResolver) Todo(ctx context.Context, todoID string) (*model.Todo, e
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
 
 	todo, err := r.TodoUsecase.Get(ctx, todoID)
-	if err != nil {
+	defer func() {
 		wiikictx.AddError(ctx, err)
+	}()
+
+	if err != nil {
 		return nil, err
 	}
 	return presenter.Todo(todo), nil
@@ -95,16 +101,25 @@ func (r *queryResolver) Todo(ctx context.Context, todoID string) (*model.Todo, e
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
-
-	user, err := r.UserUsecase.Get(ctx, obj.UserID)
-
-	if err != nil {
+	user, err := storage.GetUser(ctx, obj.UserID)
+	defer func() {
 		wiikictx.AddError(ctx, err)
-		return nil, err
-	}
-
+	}()
 	return presenter.User(user), nil
 }
+
+// func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
+// 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
+
+// 	user, err := r.UserUsecase.Get(ctx, obj.UserID)
+
+// 	if err != nil {
+// 		wiikictx.AddError(ctx, err)
+// 		return nil, err
+// 	}
+
+// 	return presenter.User(user), nil
+// }
 
 // Todo returns generated.TodoResolver implementation.
 func (r *Resolver) Todo() generated.TodoResolver { return &todoResolver{r} }
