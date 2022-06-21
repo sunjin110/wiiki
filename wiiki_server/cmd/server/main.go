@@ -12,6 +12,7 @@ import (
 	"wiiki_server/infra/graph"
 	"wiiki_server/infra/graph/generated"
 	"wiiki_server/infra/graph/middleware"
+	"wiiki_server/infra/graph/storage"
 	"wiiki_server/infra/logger"
 	"wiiki_server/infra/postgres"
 	"wiiki_server/infra/postgres/psglrepository"
@@ -67,12 +68,14 @@ func main() {
 	// middleware
 	errHandlingMiddleware := middleware.NewErrorHandling(logger, conf)
 	authMiddleware := middleware.NewAuth()
-	// transactionMiddleware := middleware.NewTransactionMiddleware(postgresEngine)
+
+	// dataloader
+	loaders := storage.NewLoaders()
 
 	r := chi.NewRouter()
 
 	r.Get("/", playground.Handler("GraphQL playground", "/query"))
-	r.With(errHandlingMiddleware.ErrorHandling(), authMiddleware.Auth()).Post("/query", srv.ServeHTTP)
+	r.With(errHandlingMiddleware.ErrorHandling(), authMiddleware.Auth(), storage.Middleware(loaders)).Post("/query", srv.ServeHTTP)
 
 	log.Println("======== start wiiki server ==========")
 	log.Printf("listen : %s\n", conf.Port)
