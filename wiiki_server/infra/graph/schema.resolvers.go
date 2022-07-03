@@ -18,6 +18,10 @@ func (r *queryResolver) Node(ctx context.Context, id string) (string, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *queryResolver) SampleDeleteUser(ctx context.Context, userID string) (*bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

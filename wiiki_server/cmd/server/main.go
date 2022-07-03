@@ -10,6 +10,7 @@ import (
 	"wiiki_server/domain/service"
 	"wiiki_server/domain/usecase"
 	"wiiki_server/infra/graph"
+	"wiiki_server/infra/graph/directive"
 	"wiiki_server/infra/graph/generated"
 	"wiiki_server/infra/graph/middleware"
 	"wiiki_server/infra/graph/storage"
@@ -63,7 +64,16 @@ func main() {
 		UserUsecase:    userUsecase,
 	}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
+	directive := generated.DirectiveRoot{
+		HasRole: directive.HasRole,
+	}
+
+	c := generated.Config{
+		Resolvers:  resolver,
+		Directives: directive,
+	}
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(c))
 
 	// middleware
 	errHandlingMiddleware := middleware.NewErrorHandling(logger, conf)
@@ -72,6 +82,9 @@ func main() {
 	// dataloader
 	userReader := storage.NewUserReader(userRepository)
 	loaders := storage.NewLoaders(userReader)
+
+	// config
+	// c := generated.Config()
 
 	r := chi.NewRouter()
 

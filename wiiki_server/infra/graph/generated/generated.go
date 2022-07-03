@@ -42,6 +42,7 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	HasRole func(ctx context.Context, obj interface{}, next graphql.Resolver, role model.Role) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -60,11 +61,12 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Node  func(childComplexity int, id string) int
-		Todo  func(childComplexity int, todoID string) int
-		Todos func(childComplexity int, done *bool) int
-		User  func(childComplexity int, id *string, email *string) int
-		Users func(childComplexity int) int
+		Node             func(childComplexity int, id string) int
+		SampleDeleteUser func(childComplexity int, userID string) int
+		Todo             func(childComplexity int, todoID string) int
+		Todos            func(childComplexity int, done *bool) int
+		User             func(childComplexity int, id *string, email *string) int
+		Users            func(childComplexity int) int
 	}
 
 	Todo struct {
@@ -92,6 +94,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (string, error)
+	SampleDeleteUser(ctx context.Context, userID string) (*bool, error)
 	Todos(ctx context.Context, done *bool) ([]*model.Todo, error)
 	Todo(ctx context.Context, todoID string) (*model.Todo, error)
 	Users(ctx context.Context) ([]*model.User, error)
@@ -218,6 +221,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Node(childComplexity, args["id"].(string)), true
+
+	case "Query.sampleDeleteUser":
+		if e.complexity.Query.SampleDeleteUser == nil {
+			break
+		}
+
+		args, err := ec.field_Query_sampleDeleteUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SampleDeleteUser(childComplexity, args["userID"].(string)), true
 
 	case "Query.todo":
 		if e.complexity.Query.Todo == nil {
@@ -390,20 +405,28 @@ var sources = []*ast.Source{
 #
 # https://gqlgen.com/getting-started/
 type Query {
-    node(id: ID!): String!
+  node(id: ID!): String!
+  sampleDeleteUser(userID: ID!): Boolean @hasRole(role: ADMIN)
 }
 
 type Mutation {
-    noop(input: NoopInput): NoopPayload
+  noop(input: NoopInput): NoopPayload
 }
 
 input NoopInput {
-    clientMutationId: String
+  clientMutationId: String
 }
 
 type NoopPayload {
-    clientMutationId: String
+  clientMutationId: String
 }
+
+enum Role {
+  ADMIN
+  USER
+}
+
+directive @hasRole(role: Role!) on FIELD_DEFINITION
 `, BuiltIn: false},
 	{Name: "../../../../proto/graph/todo.graphqls", Input: `extend type Query {
   todos(done: Boolean): [Todo!]!
@@ -479,6 +502,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) dir_hasRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.Role
+	if tmp, ok := rawArgs["role"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("role"))
+		arg0, err = ec.unmarshalNRole2wiiki_serverᚋinfraᚋgraphᚋmodelᚐRole(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["role"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createTodo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -612,6 +650,21 @@ func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_sampleDeleteUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["userID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userID"] = arg0
 	return args, nil
 }
 
@@ -1201,6 +1254,82 @@ func (ec *executionContext) fieldContext_Query_node(ctx context.Context, field g
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_node_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_sampleDeleteUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_sampleDeleteUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().SampleDeleteUser(rctx, fc.Args["userID"].(string))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2wiiki_serverᚋinfraᚋgraphᚋmodelᚐRole(ctx, "ADMIN")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *bool`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_sampleDeleteUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_sampleDeleteUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -4068,6 +4197,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "sampleDeleteUser":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_sampleDeleteUser(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "todos":
 			field := field
 
@@ -4643,6 +4792,16 @@ func (ec *executionContext) unmarshalNNewTodo2wiiki_serverᚋinfraᚋgraphᚋmod
 func (ec *executionContext) unmarshalNNewUser2wiiki_serverᚋinfraᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNRole2wiiki_serverᚋinfraᚋgraphᚋmodelᚐRole(ctx context.Context, v interface{}) (model.Role, error) {
+	var res model.Role
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNRole2wiiki_serverᚋinfraᚋgraphᚋmodelᚐRole(ctx context.Context, sel ast.SelectionSet, v model.Role) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
