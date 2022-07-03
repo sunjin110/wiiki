@@ -108,19 +108,6 @@ func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, 
 	return presenter.User(user), nil
 }
 
-// func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-// 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
-
-// 	user, err := r.UserUsecase.Get(ctx, obj.UserID)
-
-// 	if err != nil {
-// 		wiikictx.AddError(ctx, err)
-// 		return nil, err
-// 	}
-
-// 	return presenter.User(user), nil
-// }
-
 // Todo returns generated.TodoResolver implementation.
 func (r *Resolver) Todo() generated.TodoResolver { return &todoResolver{r} }
 
