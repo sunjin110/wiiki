@@ -12,7 +12,6 @@ import (
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-
 	ctx, close, err := postgres.WithReadWriteDB(ctx, r.PostgresEngine)
 	defer func() {
 		close(err)
@@ -33,7 +32,6 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, input model.UserID) (bool, error) {
-
 	ctx, close, err := postgres.WithReadWriteDB(ctx, r.PostgresEngine)
 	defer func() {
 		close(err)
@@ -48,7 +46,6 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, input model.UserID) (
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUser) (bool, error) {
-
 	ctx, close, err := postgres.WithReadWriteDB(ctx, r.PostgresEngine)
 	defer func() {
 		close(err)
@@ -67,7 +64,6 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUse
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
 
 	userList, err := r.UserUsecase.List(ctx)
@@ -79,7 +75,6 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 }
 
 func (r *queryResolver) User(ctx context.Context, id *string, email *string) (*model.User, error) {
-
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
 
 	user, err := r.UserUsecase.FindOne(ctx, id, email)

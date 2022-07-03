@@ -14,7 +14,6 @@ import (
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-
 	ctx, close, err := postgres.WithReadWriteDB(ctx, r.PostgresEngine)
 	defer func() {
 		close(err)
@@ -34,7 +33,6 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 }
 
 func (r *mutationResolver) DeleteTodo(ctx context.Context, input model.TodoID) (bool, error) {
-
 	ctx, close, err := postgres.WithReadWriteDB(ctx, r.PostgresEngine)
 	defer func() {
 		close(err)
@@ -48,8 +46,7 @@ func (r *mutationResolver) DeleteTodo(ctx context.Context, input model.TodoID) (
 	return true, nil
 }
 
-func (r *mutationResolver) UpdateTodo(ctx context.Context, input *model.UpdateTodo) (isSuccess bool, err error) {
-
+func (r *mutationResolver) UpdateTodo(ctx context.Context, input *model.UpdateTodo) (bool, error) {
 	ctx, close, err := postgres.WithReadWriteDB(ctx, r.PostgresEngine)
 	defer func() {
 		close(err)
@@ -72,7 +69,6 @@ func (r *mutationResolver) UpdateTodo(ctx context.Context, input *model.UpdateTo
 }
 
 func (r *queryResolver) Todos(ctx context.Context, done *bool) ([]*model.Todo, error) {
-
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
 	todoList, err := r.TodoUsecase.List(ctx)
 	defer func() {
@@ -85,7 +81,6 @@ func (r *queryResolver) Todos(ctx context.Context, done *bool) ([]*model.Todo, e
 }
 
 func (r *queryResolver) Todo(ctx context.Context, todoID string) (*model.Todo, error) {
-
 	ctx = postgres.WithReadDB(ctx, r.PostgresEngine)
 
 	todo, err := r.TodoUsecase.Get(ctx, todoID)
