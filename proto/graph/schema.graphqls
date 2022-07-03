@@ -2,17 +2,25 @@
 #
 # https://gqlgen.com/getting-started/
 type Query {
-    node(id: ID!): String!
+  node(id: ID!): String!
+  sampleDeleteUser(userID: ID!): Boolean @hasRole(role: ADMIN)
 }
 
 type Mutation {
-    noop(input: NoopInput): NoopPayload
+  noop(input: NoopInput): NoopPayload
 }
 
 input NoopInput {
-    clientMutationId: String
+  clientMutationId: String
 }
 
 type NoopPayload {
-    clientMutationId: String
+  clientMutationId: String
 }
+
+enum Role {
+  ADMIN
+  USER
+}
+
+directive @hasRole(role: Role!) on FIELD_DEFINITION
