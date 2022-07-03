@@ -32,6 +32,21 @@ func (impl *userRepoImpl) List(ctx context.Context) ([]*repomodel.User, error) {
 	return userList, nil
 }
 
+func (impl *userRepoImpl) ListByIDList(ctx context.Context, idList []string) ([]*repomodel.User, error) {
+	db, err := wiikictx.GetReadDB(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var userList []*repomodel.User
+	err = db.Table(impl.tableName).In("id", idList).Find(&userList)
+	if err != nil {
+		return nil, wiikierr.Bind(err, wiikierr.FailedFindRepository, "table=%s. idList=%v", impl.tableName, idList)
+	}
+
+	return userList, nil
+}
+
 func (impl *userRepoImpl) Get(ctx context.Context, userID string) (*repomodel.User, error) {
 	db, err := wiikictx.GetReadDB(ctx)
 	if err != nil {

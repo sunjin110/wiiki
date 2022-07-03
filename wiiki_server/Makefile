@@ -1,5 +1,5 @@
 MIGRATE_NAME=DEFAULT
-POSTGRES_DEVELOP="host=127.0.0.1 port=5432 user=wiiki_user dbname=wiiki sslmode=disable password=ZnfZxXY3"
+POSTGRES_DEVELOP="host=127.0.0.1 port=5433 user=wiiki_user dbname=wiiki sslmode=disable password=ZnfZxXY3"
 POSTGRES_MIGRATIONS_DIR=infra/postgres/migrations
 
 gqlgen_generate:

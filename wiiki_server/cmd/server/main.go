@@ -70,7 +70,8 @@ func main() {
 	authMiddleware := middleware.NewAuth()
 
 	// dataloader
-	loaders := storage.NewLoaders()
+	userReader := storage.NewUserReader(userRepository)
+	loaders := storage.NewLoaders(userReader)
 
 	r := chi.NewRouter()
 
